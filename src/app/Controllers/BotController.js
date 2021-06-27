@@ -1,4 +1,3 @@
-const handleMess = require("../../api/handleMessage");
 const handleMessage = require("../../api/handleMessage");
 const handlePostback = require("../../api/handlePostback");
 require("dotenv").config();
@@ -35,7 +34,6 @@ class BotController {
       body.entry.forEach(function (entry) {
         let webhook_event = entry.messaging[0];
         let sender_psid = webhook_event.sender.id;
-
         if (webhook_event.message) {
           handleMessage(sender_psid, webhook_event.message);
         } else if (webhook_event.postback) {
