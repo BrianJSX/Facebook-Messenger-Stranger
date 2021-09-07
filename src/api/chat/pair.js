@@ -19,7 +19,7 @@ const handleAddRoom = async (sender_psid) => {
 
   if(userIsRoom != null){
     let response = {
-        text: `[BOT] Đã tạo phòng chat ID: ${userIsRoom._id}. Gửi "end" để thực hiện lại hành động.`,
+        text: `Đã tạo phòng chat 💒 ID: ${userIsRoom._id}. Gửi "end" để kết thúc phòng chat ❌. [BOT] Đang tìm bạn chat để ghép... 💏 `,
     };
     const room = new Room();
     room.p1 = sender_psid;
@@ -28,7 +28,7 @@ const handleAddRoom = async (sender_psid) => {
     await User.updateOne({ messenger_id: sender_psid }, { state: 1 });
   } else { 
     let response = {
-        text: `[BOT] Bạn đang trong phòng chat. Gửi "end" để kết thúc hành động`,
+        text: `[BOT] Bạn đang trong phòng chat 💒. Gửi "end" để kết thúc phòng chat ❌.`,
     };
     await callSendAPI(sender_psid, response);
   }
@@ -37,7 +37,10 @@ const handleAddRoom = async (sender_psid) => {
 
 const handleUpdateP2 = async (roomIsEmpty, sender_psid) => {
   let response = {
-    text: `[BOT] Ping Ping đã tìm thấy bạn tâm giao. Hãy gửi lời chào với nhau nào`,
+    text: `[BOT] 💓 Ping Ping! Đã tìm thấy bạn rồi 💯!! Gửi lời chào với nhau nào!! 🙋`,
+  };
+  let responseHello = {
+    text: `Chào bạn !!`,
   };
   let roomUpdate = await Room.updateOne(
     { _id: roomIsEmpty._id },
@@ -48,7 +51,9 @@ const handleUpdateP2 = async (roomIsEmpty, sender_psid) => {
 
   await User.updateOne({ messenger_id: sender_psid }, { state: 1 });
   await callSendAPI(userP1, response);
+  await callSendAPI(userP1, responseHello);
   await callSendAPI(userP2, response);
+  await callSendAPI(userP2, responseHello);
 };
 
 module.exports = {

@@ -20,7 +20,7 @@ const handleUser = async (sender_psid, received_message) => {
       //check room.p2 == null send message
       if (userConnect.p2 == null) {
         response = {
-          text: '[BOT] 🔎 Đang tìm bạn Chat..., gửi "end" sau đó Chọn Giới tính mới.',
+          text: '[BOT] 🔎 Đang tìm bạn Chat..., gửi "end" sau đó Chọn Giới tính mới ❌.',
         };
         callSendAPI(sender_psid, response);
       } else {
@@ -53,7 +53,7 @@ const handleEndAction = async (sender_psid, received_message) => {
 
   if (userP1 == sender_psid) {
     response = {
-      text: "[BOT] Phòng chat đã bị chủ phòng kết thúc. Vui lòng chọn giới tính bạn muốn tìm",
+      text: "[BOT] 💔 Hic! Chủ phòng đã ngắt kết nối rồi. Vui lòng chọn giới tính bạn muốn tìm 💑",
     };
     await Room.deleteOne({ _id: roomId });
     await User.updateMany(
@@ -66,10 +66,10 @@ const handleEndAction = async (sender_psid, received_message) => {
     handleMenu(userP2);
   } else {
     responseP1 = {
-      text: `[BOT] Bạn kia đã kết thúc cuộc trò truyện. Đang tìm kiếm người bạn khác. Gửi "end" để kết thúc hành động`,
+      text: `[BOT] 💔 Hic! Bạn ý đã ngắt kết nối rồi . Gửi "end" để kết thúc phòng ❌. 🔎 Đang tìm kiếm người bạn khác... 💑 `,
     };
     responseP2 = {
-      text: `[BOT] đã kết thúc cuộc trò truyện`,
+      text: `[BOT] 💔 đã kết thúc cuộc trò chuyện ❌. Vui lòng chọn bạn chat có giới tính mới 💑`,
     };
     await Room.updateOne({ _id: roomId }, { p2: null });
     await User.updateOne({ messenger_id: userP2 }, { state: 0 });
@@ -93,21 +93,21 @@ const handleMenu = async (sender_psid) => {
       type: "template",
       payload: {
         template_type: "button",
-        text: "[BOT] Chào mừng bạn đến với Dầu Tiếng Connection. Trước khi bắt đầu, hãy chắc chắn rằng bạn đã chọn đúng giới tính người muốn chat cùng.",
+        text: "[BOT] 💟💟💟 Chào mừng bạn đến với Dầu Tiếng Connection 📸. Trước khi bắt đầu 🤔, hãy chắc chắn rằng bạn đã chọn đúng giới tính người muốn chat cùng. 👪",
         buttons: [
           {
             type: "postback",
-            title: "Tìm Nam",
+            title: "💯 Tìm bạn có giới tính là Nam. 👦",
             payload: "male",
           },
           {
             type: "postback",
-            title: "Tìm Nữ",
+            title: "💯 Tìm bạn có giới tính là Nữ. 👧",
             payload: "female",
           },
           {
             type: "postback",
-            title: "Tìm ACE chí cốt",
+            title: "💯 Tìm ACE chí cốt. 🍻",
             payload: "lgbt",
           },
         ],
