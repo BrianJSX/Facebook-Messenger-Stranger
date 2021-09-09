@@ -6,7 +6,7 @@ const handleUser = async (sender_psid, received_message) => {
   let userNotRoom = await User.find({ messenger_id: sender_psid, state: 0 });
 
   if (userNotRoom.length > 0) {
-    handleMenu(sender_psid);
+    await handleMenu(sender_psid);
   } else {
     let userIsRoom = await User.findOne({
       messenger_id: sender_psid,
@@ -19,19 +19,19 @@ const handleUser = async (sender_psid, received_message) => {
       });
       //check room.p2 == null send message
       if (userConnect.p2 == null) {
-        response = {
+        let response = {
           text: '[BOT] 🔎 Đang tìm bạn Chat..., gửi "end" sau đó Chọn Giới tính mới ❌.',
         };
         callSendAPI(sender_psid, response);
       } else {
         //check user is sender_psid send message to userP2
         if (userConnect.p1 == sender_psid) {
-          response = {
+          let response = {
             text: `${received_message.text}`,
           };
           callSendAPI(userConnect.p2, response);
         } else {
-          response = {
+          let response = {
             text: `${received_message.text}`,
           };
           callSendAPI(userConnect.p1, response);
@@ -52,7 +52,7 @@ const handleEndAction = async (sender_psid, received_message) => {
   const userP2 = getRoom.p2;
 
   if (userP1 == sender_psid) {
-    response = {
+    let response = {
       text: "[BOT] 💔 Hic! Chủ phòng đã ngắt kết nối rồi. Vui lòng chọn giới tính bạn muốn tìm 💑",
     };
     await Room.deleteOne({ _id: roomId });
@@ -62,20 +62,20 @@ const handleEndAction = async (sender_psid, received_message) => {
     );
     await callSendAPI(userP1, response);
     await callSendAPI(userP2, response);
-    handleMenu(userP1);
-    handleMenu(userP2);
+    await handleMenu(userP1);
+    await handleMenu(userP2);
   } else {
-    responseP1 = {
+    let responseP1 = {
       text: `[BOT] 💔 Hic! Bạn ý đã ngắt kết nối rồi . Gửi "end" để kết thúc phòng ❌. 🔎 Đang tìm kiếm người bạn khác... 💑 `,
     };
-    responseP2 = {
+    let responseP2 = {
       text: `[BOT] 💔 đã kết thúc cuộc trò chuyện ❌. Vui lòng chọn bạn chat có giới tính mới 💑`,
     };
     await Room.updateOne({ _id: roomId }, { p2: null });
     await User.updateOne({ messenger_id: userP2 }, { state: 0 });
     await callSendAPI(userP1, responseP1);
     await callSendAPI(userP2, responseP2);
-    handleMenu(userP2);
+    await handleMenu(userP2);
   }
 };
 
@@ -83,7 +83,7 @@ const handleAddUser = async (sender_psid) => {
   const user = new User();
   user.messenger_id = sender_psid;
   await user.save();
-  handleMenu(sender_psid);
+  await handleMenu(sender_psid);
 };
 
 const handleMenu = async (sender_psid) => {
@@ -109,6 +109,11 @@ const handleMenu = async (sender_psid) => {
             type: "postback",
             title: "💯 Tìm ACE chí cốt. 🍻",
             payload: "lgbt",
+          },
+          {
+            type: "postback",
+            title: "💯 Xem UID của bạn. 👑",
+            payload: "uid",
           },
         ],
       },

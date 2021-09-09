@@ -10,6 +10,9 @@ async function handlePostback(sender_psid, received_postback) {
     Room.handleRoom(sender_psid);
   } else if (payload === "lgbt") {
     Room.handleRoom(sender_psid);
+  } else if (payload === "uid") {
+    let response = `UID của bạn là ${sender_psid} 👑`
+    await callSendAPI(sender_psid, response);
   }
 }
 
