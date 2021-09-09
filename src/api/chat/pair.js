@@ -30,7 +30,6 @@ const handleAddRoom = async (sender_psid) => {
     await User.updateOne({ messenger_id: sender_psid }, { state: 1 });
     await callSendAPI(sender_psid, response1);
     await callSendAPI(sender_psid, response2);
-
   } else { 
     let response = {
         text: `[BOT] Bạn đang trong phòng chat 💒. Gửi "end" để kết thúc phòng chat ❌.`,
@@ -52,8 +51,11 @@ const handleUpdateP2 = async (roomIsEmpty, sender_psid) => {
     { _id: roomIsEmpty._id },
     { p2: sender_psid }
   );
-  // const userP2 = sender_psid;
-  // const userP1 = roomIsEmpty.p1;
+  
+  /**
+   * userP1 = roomIsEmpty.p1;
+   * userP2 = sender_psid;
+  */
 
   await callSendAPI(roomIsEmpty.p1, response);
   await callSendAPI(sender_psid, response);
