@@ -4,9 +4,19 @@ const User = require("../../app/Models/User");
 
 //handle event postback
 const handleRoom = async (sender_psid, payload) => {
+  let searchSex = "";
+
+  if(payload === "male") { 
+    searchSex = "female";
+  } else if(payload === "female") { 
+    searchSex = "male";
+  } else if (payload === "lgbt") {
+    searchSex = "lgbt";
+  }
+
   let roomIsEmpty = await Room.findOne({
     p1: { $nin: sender_psid },
-    gioitinh: String(payload),
+    gioitinh: String(searchSex),
     p2: null,
   }).sort({ createdAt: 1});
 
