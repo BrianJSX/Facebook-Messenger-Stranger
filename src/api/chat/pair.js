@@ -18,7 +18,7 @@ const handleRoom = async (sender_psid, payload) => {
     p1: { $nin: sender_psid },
     gioitinh: String(searchSex),
     p2: null,
-  }).sort({ createdAt: 1});
+  }).sort({ updatedAt: 1});
 
   if (roomIsEmpty != null) {
     await handleUpdateP2(roomIsEmpty, sender_psid, payload);
