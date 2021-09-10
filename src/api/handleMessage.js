@@ -4,6 +4,7 @@ const textChat = require("./chat/textChat");
 // Handles message_text events
 async function handleMessage(sender_psid, received_message) {
   switch (received_message.text) {
+    case "End":
     case "end":
       textChat.handleEndAction(sender_psid, received_message);
       break;
