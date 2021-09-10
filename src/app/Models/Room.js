@@ -3,8 +3,9 @@ const Schema = mongoose.Schema;
 
 const Room = new Schema(
   {
-    p1: { type: String, unique: true },
-    p2: { type: String, unique: true, default: null },
+    p1: { type: String, unique: false, default: null},
+    p2: { type: String, unique: false, default: null },
+    gioitinh: { type: String, default: null }
   },
   {
     timestamps: true,
