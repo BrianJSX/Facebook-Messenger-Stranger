@@ -1,6 +1,9 @@
 const Room = require("../api/chat/pair");
 const callSendAPI = require("./callApi");
+const callSendImgAPI = require("./callSendImgAPI");
 const textChat = require("./chat/textChat");
+const requestApiGet = require("./requestApi");
+
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
   try {
@@ -20,6 +23,12 @@ async function handlePostback(sender_psid, received_postback) {
         text: `[BOT] UID 👒 của bạn là:  ${sender_psid} 👑`,
       };
       await callSendAPI(sender_psid, response);
+    } else if (payload === "dog") { 
+      let data = await requestApiGet("https://dog.ceo/api/breeds/image/random");
+      await callSendImgAPI(sender_psid, String(data.message));
+    } else if (payload === "cat") { 
+      let data = await requestApiGet("https://api.thecatapi.com/v1/images/search");
+      await callSendImgAPI(sender_psid, String(data[0].url));
     }
   } catch (error) {
     console.log(error);

@@ -1,12 +1,19 @@
 const request = require("request");
 
-// Sends response messages via the Send API
-function callSendAPI(sender_psid, response) {
+function callSendImgAPI(sender_psid, response) {
   let request_body = {
     recipient: {
       id: sender_psid,
     },
-    message: response,
+    message: {
+      attachment: {
+        type: "image",
+        payload: {
+          url: response,
+          is_reusable: true,
+        },
+      },
+    },
   };
   //response when user send the message
   request(
@@ -18,12 +25,12 @@ function callSendAPI(sender_psid, response) {
     },
     (err, res, body) => {
       if (!err) {
-        console.log("Đã gửi tin nhắn");
+        console.log("Đã gửi hình ảnh");
       } else {
-        console.error("Gửi tin nhắn lỗi:" + err);
+        console.error("Gửi hình lỗi:" + err);
       }
     }
   );
 }
 
-module.exports = callSendAPI;
+module.exports = callSendImgAPI;
