@@ -2,58 +2,91 @@ const User = require("../../app/Models/User");
 const Room = require("../../app/Models/Room");
 const callSendAPI = require("../callApi");
 const callSendImgAPI = require("../callSendImgAPI");
+const requestApiGet = require("../requestApi");
+const _ = require("lodash");
 
 const handleUser = async (sender_psid, received_message) => {
-  try {
-    let userNotRoom = await User.find({ messenger_id: sender_psid, state: 0 });
-
-    if (userNotRoom.length > 0) {
-      await handleMenu(sender_psid);
+  if (received_message.text != null && received_message.text.includes("kcovid")) {
+    let strName = _.capitalize(received_message.text.slice(7));
+    let uptoLowerStr = strName.replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());
+    let city = "";
+    if(uptoLowerStr.includes("Hồ Chí Minh")) { 
+      let text = "TP.";
+      city = text.concat(" ", uptoLowerStr);
+      console.log(city);
+    } else { 
+      city = uptoLowerStr;
+    }
+    let data = await requestApiGet(
+      "https://static.pipezero.com/covid/data.json"
+    );
+    let dataCity = _.find(data.locations, { name: city });
+    if (dataCity == null) {
+      let response = await {
+        text: `[BOT COVID] Không tìm thấy Tỉnh được yêu cầu ❌. 📌Vui lòng ghi đúng tên và có dấu ( chỉ ghi tên TP/Tỉnh không thêm các kí tự đặc biệt ) `,
+      };
+      callSendAPI(sender_psid, response);
     } else {
-      let userIsRoom = await User.findOne({
+      let response = await {
+        text: `[BOT COVID] 🌎 Khu Vực ${dataCity.name}. 🛑 Tổng ca nhiễm: ${dataCity.cases}. 💢 Hôm nay: ${dataCity.casesToday}. ☠️ Số người chết: ${dataCity.death}`,
+      };
+      callSendAPI(sender_psid, response);
+    }
+  } else {
+    try {
+      let userNotRoom = await User.find({
         messenger_id: sender_psid,
-        state: 1,
+        state: 0,
       });
 
-      if (userIsRoom != null) {
-        let userConnect = await Room.findOne({
-          $or: [{ p1: sender_psid }, { p2: sender_psid }],
+      if (userNotRoom.length > 0) {
+        await handleMenu(sender_psid);
+      } else {
+        let userIsRoom = await User.findOne({
+          messenger_id: sender_psid,
+          state: 1,
         });
-        //check room.p2 == null send message
-        if (userConnect.p2 == null) {
-          response = {
-            text: '[BOT] 🔎 Đang tìm bạn Chat..., gửi "end" sau đó Chọn Giới tính mới ❌.',
-          };
-          await callSendAPI(sender_psid, response);
-        } else {
-          if (userConnect.p1 == sender_psid) {
-            if (received_message.text == null) {
-              let urlImage = received_message.attachments[0].payload.url;
-              await callSendImgAPI(userConnect.p2, urlImage);
-            } else {
-              let response = {
-                text: `${received_message.text}`,
-              };
-              await callSendAPI(userConnect.p2, response);
-            }
+
+        if (userIsRoom != null) {
+          let userConnect = await Room.findOne({
+            $or: [{ p1: sender_psid }, { p2: sender_psid }],
+          });
+          //check room.p2 == null send message
+          if (userConnect.p2 == null) {
+            response = {
+              text: '[BOT] 🔎 Đang tìm bạn Chat..., gửi "end" sau đó Chọn Giới tính mới ❌.',
+            };
+            await callSendAPI(sender_psid, response);
           } else {
-            if (received_message.text == null) {
-              let urlImage = received_message.attachments[0].payload.url;
-              await callSendImgAPI(userConnect.p1, urlImage);
+            if (userConnect.p1 == sender_psid) {
+              if (received_message.text == null) {
+                let urlImage = received_message.attachments[0].payload.url;
+                await callSendImgAPI(userConnect.p2, urlImage);
+              } else {
+                let response = {
+                  text: `${received_message.text}`,
+                };
+                await callSendAPI(userConnect.p2, response);
+              }
             } else {
-              let response = {
-                text: `${received_message.text}`,
-              };
-              await callSendAPI(userConnect.p1, response);
+              if (received_message.text == null) {
+                let urlImage = received_message.attachments[0].payload.url;
+                await callSendImgAPI(userConnect.p1, urlImage);
+              } else {
+                let response = {
+                  text: `${received_message.text}`,
+                };
+                await callSendAPI(userConnect.p1, response);
+              }
             }
           }
+        } else {
+          await handleAddUser(sender_psid);
         }
-      } else {
-        await handleAddUser(sender_psid);
       }
+    } catch (error) {
+      console.log("Lỗi khi trong hàm handleUser" + error);
     }
-  } catch (error) {
-    console.log("Lỗi khi trong hàm handleUser" + error);
   }
 };
 

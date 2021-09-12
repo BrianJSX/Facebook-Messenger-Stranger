@@ -29,6 +29,15 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload === "cat") { 
       let data = await requestApiGet("https://api.thecatapi.com/v1/images/search");
       await callSendImgAPI(sender_psid, String(data[0].url));
+    } else if (payload == "covid") { 
+      let response = {
+        text: `[BOT COVID] 📍 Vui lòng nhập "kcovid" + tên "TP hoặc Tỉnh" để xem thống kê số ca tại khu vực. ♻️ `,
+      };
+      let response1 = {
+        text: `[BOT COVID] 📍 Ví dụ: kcovid Bình Dương. `,
+      };
+      await callSendAPI(sender_psid, response1);
+      await callSendAPI(sender_psid, response);
     }
   } catch (error) {
     console.log(error);

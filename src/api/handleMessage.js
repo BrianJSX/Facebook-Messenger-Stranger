@@ -1,4 +1,3 @@
-const callSendAPI = require("./callApi");
 const textChat = require("./chat/textChat");
 
 // Handles message_text events
