@@ -11,7 +11,7 @@ const handleRoom = async (sender_psid, payload) => {
     } else if (payload === "female") {
       searchSex = "male";
     } else if (payload === "lgbt") {
-      searchSex = "lgbt";
+      searchSex = payload;
     }
 
     let roomIsEmpty = await Room.findOne({

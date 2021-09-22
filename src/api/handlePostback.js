@@ -1,8 +1,10 @@
 const Room = require("../api/chat/pair");
 const callSendAPI = require("./callApi");
-const callSendImgAPI = require("./callSendImgAPI");
+const handleImage = require("./chat/handleImage");
 const textChat = require("./chat/textChat");
 const requestApiGet = require("./requestApi");
+const { handleEndAction } = require("./chat/handleEndAction");
+
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
@@ -17,7 +19,7 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload === "start") {
       await textChat.handleUser(sender_psid, payload);
     } else if (payload === "end") {
-      await textChat.handleEndAction(sender_psid, payload);
+      await handleEndAction(sender_psid, payload);
     } else if (payload === "uid") {
       let response = {
         text: `[BOT] UID 👒 của bạn là:  ${sender_psid} 👑`,
@@ -25,10 +27,10 @@ async function handlePostback(sender_psid, received_postback) {
       await callSendAPI(sender_psid, response);
     } else if (payload === "dog") { 
       let data = await requestApiGet("https://dog.ceo/api/breeds/image/random");
-      await callSendImgAPI(sender_psid, String(data.message));
+      await handleImage(sender_psid, String(data.message));
     } else if (payload === "cat") { 
       let data = await requestApiGet("https://api.thecatapi.com/v1/images/search");
-      await callSendImgAPI(sender_psid, String(data[0].url));
+      await handleImage(sender_psid, String(data[0].url));
     } else if (payload == "covid") { 
       let response = {
         text: `[BOT COVID] 📍 Vui lòng nhập "kcovid" + tên "TP hoặc Tỉnh" để xem thống kê số ca tại khu vực. ♻️ `,

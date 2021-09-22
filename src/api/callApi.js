@@ -18,6 +18,7 @@ function callSendAPI(sender_psid, response) {
     },
     (err, res, body) => {
       if (!err) {
+        console.log(res.body);
         console.log("Đã gửi tin nhắn");
       } else {
         console.error("Gửi tin nhắn lỗi:" + err);

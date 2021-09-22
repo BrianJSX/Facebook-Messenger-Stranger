@@ -1,14 +1,18 @@
 const textChat = require("./chat/textChat");
-
+const { handleEndAction } = require("./chat/handleEndAction");
+const { handleMusic } = require("./musicPlayer");
 // Handles message_text events
 async function handleMessage(sender_psid, received_message) {
   switch (received_message.text) {
+    // case "music":
+    //   await handleMusic(sender_psid, received_message);
+    //   break;
     case "End":
     case "end":
-      textChat.handleEndAction(sender_psid, received_message);
+      await handleEndAction(sender_psid, received_message);
       break;
     default:
-      textChat.handleUser(sender_psid, received_message);
+      await textChat.handleUser(sender_psid, received_message);
       break;
   }
 }

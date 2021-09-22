@@ -1,6 +1,6 @@
 const request = require("request");
 
-function callSendImgAPI(sender_psid, response) {
+function handleImage(sender_psid, response) {
   let request_body = {
     recipient: {
       id: sender_psid,
@@ -33,4 +33,4 @@ function callSendImgAPI(sender_psid, response) {
   );
 }
 
-module.exports = callSendImgAPI;
+module.exports = handleImage;
