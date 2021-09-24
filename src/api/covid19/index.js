@@ -3,13 +3,16 @@ const _ = require("lodash");
 const callSendAPI = require("../callApi");
 
 const handleCovid = async (sender_psid, received_message) => {
+  try {
     let strName = _.capitalize(received_message.text.slice(7));
-    let uptoLowerStr = strName.replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase());
+    let uptoLowerStr = strName.replace(/(^\w{1})|(\s{1}\w{1})/g, (match) =>
+      match.toUpperCase()
+    );
     let city = "";
-    if(uptoLowerStr.includes("Hồ Chí Minh")) { 
+    if (uptoLowerStr.includes("Hồ Chí Minh")) {
       let text = "TP.";
       city = text.concat(" ", uptoLowerStr);
-    } else { 
+    } else {
       city = uptoLowerStr;
     }
     let data = await requestApiGet(
@@ -27,8 +30,15 @@ const handleCovid = async (sender_psid, received_message) => {
       };
       await callSendAPI(sender_psid, response);
     }
+  } catch (error) {
+    console.log(error);
+    let message = {
+      text: `[BOT Lỗi] Lỗi Hệ Thống Vui Lòng Thử lại.`,
+    };
+    await callSendAPI(sender_psid, message);
+  }
 };
 
 module.exports = {
-    handleCovid: handleCovid
+  handleCovid: handleCovid,
 };
