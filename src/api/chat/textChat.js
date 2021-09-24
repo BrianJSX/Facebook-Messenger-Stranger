@@ -4,6 +4,7 @@ const callSendAPI = require("../callApi");
 const handleImage = require("./handleImage");
 const { handleCovid } = require("../covid19");
 const { handleMenu } = require("./handleEndAction");
+const { searchMusic } = require("../musicPlayer");
 
 const handleUser = async (sender_psid, received_message) => {
   try {
@@ -13,11 +14,18 @@ const handleUser = async (sender_psid, received_message) => {
         received_message.text.includes("Kcovid"))
     ) {
       await handleCovid(sender_psid, received_message);
+    } else if (
+      received_message.text != null &&
+      (received_message.text.includes("music") ||
+        received_message.text.includes("Music"))
+    ) {
+      await searchMusic(sender_psid, received_message);
     } else {
       let userNotRoom = await User.find({
         messenger_id: sender_psid,
         state: 0,
       });
+
       if (userNotRoom.length > 0) {
         await handleMenu(sender_psid);
       } else {
@@ -40,9 +48,9 @@ const handleUser = async (sender_psid, received_message) => {
             if (userConnect.p1 == sender_psid) {
               if (received_message.text == null) {
                 let urlImage = received_message.attachments;
-                await urlImage.map(data => { 
+                await urlImage.map((data) => {
                   handleImage(userConnect.p2, data.payload.url);
-                })
+                });
               } else {
                 let response = {
                   text: `${received_message.text}`,
@@ -52,7 +60,7 @@ const handleUser = async (sender_psid, received_message) => {
             } else {
               if (received_message.text == null) {
                 let urlImage = received_message.attachments;
-                await urlImage.map(data => { 
+                await urlImage.map((data) => {
                   handleImage(userConnect.p1, data.payload.url);
                 });
               } else {
@@ -84,7 +92,6 @@ const handleAddUser = async (sender_psid) => {
   }
 };
 
-
 module.exports = {
-  handleUser: handleUser
+  handleUser: handleUser,
 };

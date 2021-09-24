@@ -71,7 +71,7 @@ const handleMenu = async (sender_psid) => {
           },
           {
             type: "postback",
-            title: "💯 Tìm bạn cùng giới. 🍻",
+            title: "💯 Tìm bạn chí cốt. 🍻",
             payload: "lgbt",
           },
         ],

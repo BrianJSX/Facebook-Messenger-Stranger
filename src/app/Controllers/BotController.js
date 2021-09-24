@@ -11,7 +11,7 @@ class BotController {
   }
   
   //get webHook
-  getWebhook(req, res) {
+  async getWebhook(req, res) {
     let VERIFY_TOKEN = verifyToken;
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
