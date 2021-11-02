@@ -72,7 +72,7 @@ const getMusic = async (sender_psid, received_message) => {
 
 const replyMusic = async (sender_psid) => {
   let response = {
-    text: `[BOT MUSIC] 🎼 tìm kiếm nhạc nhập"music" + "tên bài hát". ️🎯 ví dụ: music lạc trôi`,
+    text: `[BOT MUSIC] 🎼 tìm kiếm nhạc nhập "music" + "tên bài hát". ️🎯 ví dụ: music lạc trôi`,
   };
   await callSendAPI(sender_psid, response);
 };

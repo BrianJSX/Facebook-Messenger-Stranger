@@ -10,7 +10,7 @@ const handleEndAction = async (sender_psid, received_message) => {
 
     if (getRoom == null) {
       let response = {
-        text: `[BOT] Hiện tại bạn chưa có phòng để kết thúc 👑. Vui lòng chọn giới tính đề chat 💓`,
+        text: `[BOT] Hiện tại bạn chưa có phòng để kết thúc 👑. Vui lòng chọn giới tính trong Menu hệ thống 💓`,
       };
       await callSendAPI(sender_psid, response);
     } else {
@@ -20,7 +20,7 @@ const handleEndAction = async (sender_psid, received_message) => {
 
       if (userP1 == sender_psid) {
         let response = {
-          text: "[BOT] ❌ Chủ phòng đã hủy phòng. Vui lòng chọn giới tính bạn muốn tìm 💑",
+          text: "[BOT] ❌ Chủ phòng đã ngắt kết nối. Vui Lòng chọn giới tính mới. 💓",
         };
         await User.updateMany(
           { $or: [{ messenger_id: userP1 }, { messenger_id: userP2 }] },
@@ -34,7 +34,7 @@ const handleEndAction = async (sender_psid, received_message) => {
         await handleMenu(userP2);
       } else {
         let responseP1 = {
-          text: `[BOT] 💔 Hic! Bạn ý đã ngắt kết nối rồi .🔎 Đang tìm kiếm người bạn khác... 💑,  Gửi "end" để kết thúc phòng ❌.  `,
+          text: `[BOT] 💔 Hic! Bạn ý đã ngắt kết nối rồi .🔎 Đang tìm kiếm người bạn khác... 💑`,
         };
         let responseP2 = {
           text: `[BOT] 💔 đã kết thúc cuộc trò chuyện ❌. Vui lòng chọn bạn chat có giới tính mới 💑`,
@@ -57,21 +57,21 @@ const handleMenu = async (sender_psid) => {
       type: "template",
       payload: {
         template_type: "button",
-        text: "[BOT] 💟💟💟 Chào mừng bạn đến với Dầu Tiếng Connection 📸. Trước khi bắt đầu 🤔, hãy chắc chắn rằng bạn đã chọn đúng giới tính người muốn chat cùng. 👪",
+        text: "[BOT] Chào mừng bạn đến với Hutech Together 📸. Trước khi bắt đầu 🤔, hãy chắc chắn rằng bạn đã chọn đúng giới tính muốn chat cùng. 👪",
         buttons: [
           {
             type: "postback",
-            title: "💯 Tìm bạn là Nam. 👦",
+            title: "Tìm Nam 👦",
             payload: "male",
           },
           {
             type: "postback",
-            title: "💯 Tìm bạn là Nữ. 👧",
+            title: "Tìm Nữ 👧",
             payload: "female",
           },
           {
             type: "postback",
-            title: "💯 Tìm bạn chí cốt. 🍻",
+            title: "Tìm chí cốt 🍻",
             payload: "lgbt",
           },
         ],

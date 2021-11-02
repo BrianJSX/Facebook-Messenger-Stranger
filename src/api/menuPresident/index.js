@@ -10,17 +10,17 @@ const handleMenuPre = async () => {
         call_to_actions: [
           {
             type: "postback",
-            title: "💯 Tìm bạn là Nam. 👦",
+            title: "💯 Tìm Nam 👦",
             payload: "male",
           },
           {
             type: "postback",
-            title: "💯 Tìm bạn là Nữ. 👧",
+            title: "💯 Tìm Nữ 👧",
             payload: "female",
           },
           {
             type: "postback",
-            title: "💯 Tìm bạn chí cốt. 🍻",
+            title: "💯 Tìm chí cốt 🍻",
             payload: "lgbt",
           },
           {
@@ -32,6 +32,16 @@ const handleMenuPre = async () => {
             type: "postback",
             title: "️🎶 Nghe nhạc",
             payload: "music",
+          },
+          {
+            type: "postback",
+            title: "️🎥 Xem tiktok",
+            payload: "tiktok",
+          },
+          {
+            type: "postback",
+            title: "🌐 Dịch Tiếng Anh",
+            payload: "dichav",
           },
           {
             type: "postback",
