@@ -2,6 +2,7 @@ const textChat = require("./chat/textChat");
 const { handleEndAction } = require("./chat/handleEndAction");
 const menuPresident = require("./menuPresident");
 const callSendAPI = require("./callApi");
+const TikTokScraper = require("tiktok-scraper");
 // Handles message_text events
 async function handleMessage(sender_psid, received_message) {
   switch (received_message.text) {

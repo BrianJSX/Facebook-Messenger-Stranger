@@ -1,16 +1,17 @@
 const request = require("request");
+const callSendAPI = require("./callApi");
 
-function sendAudio(sender_psid, response) {
+function sendVideo(sender_psid, response) {
   let request_body = {
     recipient: {
       id: sender_psid,
     },
     message: {
       attachment: {
-        type: "audio",
+        type: "video",
         payload: {
-          url: response,
           is_reusable: true,
+          url: response
         },
       },
     },
@@ -25,12 +26,18 @@ function sendAudio(sender_psid, response) {
     },
     (err, res, body) => {
       if (!err) {
-        console.log(res.body);
-        console.log("Đã gửi audio");
+        if (res.body.error) {
+          let response = {
+            text: `[BOT TIKTOK] 🎵 ${res.body.error.message} Vui lòng thử lại.`,
+          };
+          callSendAPI(sender_psid, response);
+        } else {
+          console.log("Đã gửi video success");
+        }
       } else {
         console.error("Gửi hình lỗi:" + err);
       }
     }
   );
 }
-module.exports = sendAudio;
+module.exports = sendVideo;
