@@ -9,6 +9,7 @@ const sendAudio = require("./sendAudio");
 const { getMusic, replyMusic } = require("./musicPlayer");
 const { sendTiktokTrend } = require("./tiktok");
 const sendVideo = require("./sendVideo");
+const { replyTranslate } = require("./translate");
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
@@ -78,10 +79,13 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload == "tiktok") {
       //payload send top trending tiktok
       await sendTiktokTrend(sender_psid);
+    } else if (payload == "dichav") {
+      //payload send top trending tiktok
+      await replyTranslate(sender_psid);
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
-      console.log(payload.slice(11))
+      console.log(payload.slice(11));
       let response = {
         text: `[BOT TIKTOK] 🎵 Waiting! video sẽ được gửi trong giây lát...`,
       };

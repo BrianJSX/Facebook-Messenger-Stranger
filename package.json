@@ -22,7 +22,8 @@
     "request": "^2.88.2",
     "tiktok-api": "^0.4.1",
     "tiktok-app-api": "^1.4.1",
-    "tiktok-scraper": "^1.4.36"
+    "tiktok-scraper": "^1.4.36",
+    "translate": "^1.4.0"
   },
   "devDependencies": {
     "node-sass": "^6.0.0"
