@@ -40,7 +40,7 @@ const handleMenuPre = async () => {
           },
           {
             type: "postback",
-            title: "🌐 Dịch Tiếng Anh",
+            title: "🌐 Dịch Song Ngữ (A-V)",
             payload: "dichav",
           },
           {
