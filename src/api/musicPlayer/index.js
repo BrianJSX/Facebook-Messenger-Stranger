@@ -8,8 +8,9 @@ const axios = require("axios");
 const addMusicToMenu = async (musics) => {
   let musicArr = [];
   let regex = /\w\.\w{12}/;
+  console.log(musics);
 
-  if (musics[0].url != null) {
+  if (musics[0].url != undefined) {
     musics.map(music => {
       let match = music.url.match(regex);
       let key = match[0].slice(2);
@@ -33,13 +34,13 @@ const addMusicToMenu = async (musics) => {
     });
   } else {
     musics.map((music) => {
-      let musicName = music.title;
-      let musicSinger = music.artists[0].name;
+      let musicName = music.title ? music.title : "Bài hát bản quyền";
+      let musicSinger = music.artists ? music.artists[0].name : "Bài hát bản quyền";
       let songKey = music.songKey;
 
       let musicObj = {
         title: `${musicName} - ${musicSinger}`,
-        image_url: music.thumbnail,
+        image_url: music.thumbnail ? music.thumbnail : "http://static.ybox.vn/2017/7/25/1b51520a-70e2-11e7-a080-2e995a9a3302.jpg",
         buttons: [
           {
             type: "postback",
