@@ -6,6 +6,7 @@ const { handleCovid } = require("../covid19");
 const { handleMenu } = require("./handleEndAction");
 const { searchMusic } = require("../musicPlayer");
 const { translateEnglish, translateVN } = require("../translate");
+const SendMessage = require("../../helper/SendMessage");
 
 const handleUser = async (sender_psid, received_message) => {
   try {
@@ -58,34 +59,25 @@ const handleUser = async (sender_psid, received_message) => {
           //check room.p2 == null send message
           if (userConnect.p2 == null) {
             let response = {
-              text: '[BOT] 🔎 Đang tìm bạn Chat..., gửi "end" sau đó Chọn Giới tính mới ❌.',
+              attachment: {
+                type: "template",
+                payload: {
+                  template_type: "generic",
+                  elements: [
+                    {
+                      title: `[BOT] 🔎 Đang tìm bạn Chat... `,
+                      subtitle: `📌 Nếu thấy lâu gửi "end" hoặc ấn "Kết thúc" trên Menu Hệ Thống..`,
+                    },
+                  ],
+                },
+              },
             };
             await callSendAPI(sender_psid, response);
           } else {
             if (userConnect.p1 == sender_psid) {
-              if (received_message.text == null) {
-                let urlImage = received_message.attachments;
-                await urlImage.map((data) => {
-                  handleImage(userConnect.p2, data.payload.url);
-                });
-              } else {
-                let response = {
-                  text: `${received_message.text}`,
-                };
-                await callSendAPI(userConnect.p2, response);
-              }
+              SendMessage(received_message, userConnect.p2)
             } else {
-              if (received_message.text == null) {
-                let urlImage = received_message.attachments;
-                await urlImage.map((data) => {
-                  handleImage(userConnect.p1, data.payload.url);
-                });
-              } else {
-                let response = {
-                  text: `${received_message.text}`,
-                };
-                await callSendAPI(userConnect.p1, response);
-              }
+              SendMessage(received_message, userConnect.p1)
             }
           }
         } else {

@@ -1,46 +1,25 @@
 const { handleMusic } = require("./menuMusic");
-const requestApi = require("../requestApi");
 const Nhaccuatui = require("nhaccuatui-api");
 const _ = require("lodash");
 const callSendAPI = require("../callApi");
 const axios = require("axios");
+const ZingMp3 = require("zingmp3-api");
 
 const addMusicToMenu = async (musics) => {
   let musicArr = [];
-  let regex = /\w\.\w{12}/;
-  console.log(musics);
-
-  if (musics[0].url != undefined) {
-    musics.map(music => {
-      let match = music.url.match(regex);
-      let key = match[0].slice(2);
-
-      let musicName = music.name;
-      let musicSinger = music.singer[0].name;
-      let songKey = key;
-
-      let musicObj = {
-        title: `${musicName} - ${musicSinger}`,
-        image_url: music.thumbnail,
-        buttons: [
-          {
-            type: "postback",
-            title: `${musicName} - ${musicSinger}`,
-            payload: `keymusic ${songKey}`,
-          },
-        ],
-      };
-      musicArr.push(musicObj);
-    });
-  } else {
-    musics.map((music) => {
+  musics.map((music) => {
       let musicName = music.title ? music.title : "Bài hát bản quyền";
-      let musicSinger = music.artists ? music.artists[0].name : "Bài hát bản quyền";
-      let songKey = music.songKey;
+      let musicSinger = music.artistsNames
+        ? music.artistsNames
+        : "Bài hát bản quyền";
+      let songKey = music.encodeId;
 
       let musicObj = {
         title: `${musicName} - ${musicSinger}`,
-        image_url: music.thumbnail ? music.thumbnail : "http://static.ybox.vn/2017/7/25/1b51520a-70e2-11e7-a080-2e995a9a3302.jpg",
+        subtitle: "Hãy gửi cho bạn đã ghép. Nếu muốn bạn ấy nghe cùng 💓",
+        image_url: music.thumbnailM
+          ? music.thumbnailM
+          : "http://static.ybox.vn/2017/7/25/1b51520a-70e2-11e7-a080-2e995a9a3302.jpg",
         buttons: [
           {
             type: "postback",
@@ -51,29 +30,39 @@ const addMusicToMenu = async (musics) => {
       };
       musicArr.push(musicObj);
     });
-  }
 
   return musicArr;
 };
 
-const getMusic = async (sender_psid, received_message) => {
+const getMusic = async (sender_psid) => {
   try {
-    let data = await Nhaccuatui.getTop20();
-    const musicRank = _.slice(data.ranking.song, 0, 10);
+    let data = await ZingMp3.getWeekChart('IWZ9Z08I');
+    const musicRank = _.slice(data.items, 0, 10);
     let musicArr = await addMusicToMenu(musicRank);
     await handleMusic(sender_psid, musicArr);
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
     let message = {
-      text: `[BOT Lỗi] Lỗi Hệ Thống Vui Lòng Thử lại.`
-    }
-    await callSendAPI(sender_psid, message)
+      text: `[BOT Lỗi] Lỗi Hệ Thống Vui Lòng Thử lại.`,
+    };
+    await callSendAPI(sender_psid, message);
   }
 };
 
 const replyMusic = async (sender_psid) => {
   let response = {
-    text: `[BOT MUSIC] 🎼 tìm kiếm nhạc nhập "music" + "tên bài hát". ️🎯 ví dụ: music lạc trôi`,
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: "[BOT MUSIC] 🎼 Bạn muốn tìm kiếm bài hát",
+            subtitle: `Cú pháp: "music" + "tên bài hát". ️🎯 VD: music lạc trôi`,
+          },
+        ],
+      },
+    },
   };
   await callSendAPI(sender_psid, response);
 };
@@ -81,27 +70,26 @@ const replyMusic = async (sender_psid) => {
 const searchMusic = async (sender_psid, received_message) => {
   try {
     const word = received_message.text;
-    const keyword = encodeURI(word.slice(6));
-    let response = await axios.get(
-      `https://www.nhaccuatui.com/ajax/search?q=${keyword}`
-    );
-    const song = response.data.data.song;
-    if(song.length > 0) {
-      const listSong = _.slice(song, 0, 10);
+    
+    let response = await ZingMp3.search(String(word));
+
+    const count = response.counter.song;
+    if (count > 0) {
+      const listSong = _.slice(response.songs, 0, 10);
       let musicArr = await addMusicToMenu(listSong);
       await handleMusic(sender_psid, musicArr);
-    } else { 
+    } else {
       let message = {
-        text: `[BOT MUSIC] 🎼 Không tìm thấy bài hát bạn yêu cầu.`
-      }
-      await callSendAPI(sender_psid, message)
+        text: `[BOT MUSIC] 🎼 Không tìm thấy bài hát bạn yêu cầu.`,
+      };
+      await callSendAPI(sender_psid, message);
     }
   } catch (e) {
     console.log(e);
     let message = {
-      text: `[BOT Lỗi] Lỗi Hệ Thống Vui Lòng Thử lại.`
-    }
-    await callSendAPI(sender_psid, message)
+      text: `[BOT Lỗi] Lỗi Hệ Thống Vui Lòng Thử lại.`,
+    };
+    await callSendAPI(sender_psid, message);
   }
 };
 

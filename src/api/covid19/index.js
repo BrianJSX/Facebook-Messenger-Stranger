@@ -21,12 +21,34 @@ const handleCovid = async (sender_psid, received_message) => {
     let dataCity = _.find(data.locations, { name: city });
     if (dataCity == null) {
       let response = {
-        text: `[BOT COVID] Không tìm thấy Tỉnh được yêu cầu ❌. 📌Vui lòng ghi đúng tên và có dấu ( chỉ ghi tên TP/Tỉnh không thêm các kí tự đặc biệt ) `,
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [
+              {
+                title: `[BOT COVID] Không tìm thấy Tỉnh được yêu cầu ❌. `,
+                subtitle: `📌Ghi đúng tên và có dấu. Chỉ ghi tên TP/Tỉnh không thêm kí tự đặc biệt.`,
+              },
+            ],
+          },
+        },
       };
       await callSendAPI(sender_psid, response);
     } else {
       let response = {
-        text: `[BOT COVID] 🌎 Khu Vực ${dataCity.name}. 🛑 Tổng ca nhiễm: ${dataCity.cases}. 💢 Hôm nay: ${dataCity.casesToday}. ☠️ Số người chết: ${dataCity.death}`,
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [
+              {
+                title: `[BOT COVID] 🌎 Khu Vực ${dataCity.name}. `,
+                subtitle: `🛑 Tổng ca: ${dataCity.cases}.💢 Hôm nay: ${dataCity.casesToday}. ☠️ Số người chết: ${dataCity.death}`,
+              },
+            ],
+          },
+        },
       };
       await callSendAPI(sender_psid, response);
     }
