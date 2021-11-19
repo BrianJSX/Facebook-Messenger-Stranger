@@ -97,7 +97,12 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
-      await sendVideo(sender_psid, urlVideo);
+      if (userIsRoom != null) {
+        await sendRepQuick(sender_psid, "shareTiktok", urlVideo);
+      }
+      setTimeout(async () => {
+        await sendVideo(sender_psid, urlVideo);
+      }, 5000);
     } else if (payload.includes("keymusic")) {
       //payload send audio music
       const key = payload.slice(9);
