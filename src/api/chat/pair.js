@@ -38,11 +38,19 @@ const handleAddRoom = async (sender_psid, payload) => {
       state: 0,
     });
     if (userIsRoom != null) {
-      // let response1 = {
-      //   text: `Đã tạo phòng chờ 💒 ID: ${userIsRoom._id}`,
-      // };
       let response2 = {
-        text: `[BOT] Wait!.... Đang tìm bạn chat để ghép. 💓`,
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [
+              {
+                title: `[BOT] Đang tìm bạn để ghép.....💓. `,
+                subtitle: `📌 Nếu thấy lâu gửi "end" hoặc ấn "Kết thúc" trên Menu Hệ Thống.`,
+              },
+            ],
+          },
+        },
       };
 
       const room = new Room();
@@ -51,11 +59,21 @@ const handleAddRoom = async (sender_psid, payload) => {
       await room.save();
       await User.updateOne({ messenger_id: sender_psid }, { state: 1 });
 
-      // await callSendAPI(sender_psid, response1);
       await callSendAPI(sender_psid, response2);
     } else {
       let response = {
-        text: `[BOT] Bạn đang trong phòng chat 💒. Gửi "end" để kết thúc phòng chat ❌.`,
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "generic",
+            elements: [
+              {
+                title: `[BOT] Bạn đang trong phòng chat 💒. `,
+                subtitle: `📌 Nếu thấy lâu gửi "end" hoặc ấn "Kết thúc" trên Menu Hệ Thống.`,
+              },
+            ],
+          },
+        },
       };
       await callSendAPI(sender_psid, response);
     }
@@ -67,10 +85,18 @@ const handleAddRoom = async (sender_psid, payload) => {
 const handleUpdateP2 = async (roomIsEmpty, sender_psid, payload) => {
   try {
     let response = {
-      text: `[BOT] 💓 Ping Ping! Đã tìm thấy bạn rồi 💯!! Gửi lời chào với nhau nào!! 🙋`,
-    };
-    let responseHello = {
-      text: `Chào`,
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          elements: [
+            {
+              title: `[BOT] 💓 Ping Ping! Đã tìm thấy bạn rồi 💯 `,
+              subtitle: `Hãy Gửi lời chào với nhau nào!! 🙋.`,
+            },
+          ],
+        },
+      },
     };
 
     await User.updateOne({ messenger_id: sender_psid }, { state: 1 });
@@ -81,8 +107,6 @@ const handleUpdateP2 = async (roomIsEmpty, sender_psid, payload) => {
     );
     await callSendAPI(roomIsEmpty.p1, response);
     await callSendAPI(sender_psid, response);
-    await callSendAPI(roomIsEmpty.p1, responseHello);
-    await callSendAPI(sender_psid, responseHello);
   } catch (error) {
     console.log("lỗi ghép cặp p2" + error);
   }

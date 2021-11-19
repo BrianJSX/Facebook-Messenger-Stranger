@@ -24,13 +24,35 @@ const translateVN = async (sender_psid, message) => {
 
 const replyTranslate = async (sender_psid) => {
   let response1 = {
-    text: `[BOT dịch] 🔰 Lưu ý bot chỉ hổ trợ dịch từ ngắn. 📍 "en" : dịch qua tiếng "ANH", "vi": dịch từ tiếng "VIỆT"`,
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: "[BOT dịch] 🔰 Lưu ý bot không hổ trợ dịch đoạn văn dài.",
+            subtitle: `📍 "en" -> dịch qua Tiếng Anh | "vi" -> dịch qua Tiếng Việt`,
+          },
+        ],
+      },
+    },
   };
   let response2 = {
-    text: `[BOT dịch] 🔰 cú pháp: ( en | vi ) + từ muốn dịch. 📍 ví dụ: "en xin chào" hoặc "vi hello".`,
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: "[BOT dịch] 🔰 Bạn muốn dịch song ngữ Anh - Việt",
+            subtitle: `📍 Cú pháp: ( en | vi ) + từ muốn dịch. VD: "en xin chào".`,
+          },
+        ],
+      },
+    },
   };
-  await callSendAPI(sender_psid, response1);
   await callSendAPI(sender_psid, response2);
+  await callSendAPI(sender_psid, response1);
 };
 
 module.exports = {
