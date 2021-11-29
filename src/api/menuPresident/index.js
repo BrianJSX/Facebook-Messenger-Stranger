@@ -25,6 +25,11 @@ const handleMenuPre = async () => {
           },
           {
             type: "postback",
+            title: "️🔥 Thông tin bạn ghép",
+            payload: "photo",
+          },
+          {
+            type: "postback",
             title: "❌ kết thúc ",
             payload: "end",
           },
@@ -65,8 +70,8 @@ const handleMenuPre = async () => {
           },
           {
             type: "web_url",
-            title: "Visit Website",
-            url: "https://www.dentrangtriphucloc.com/",
+            title: "Vẽ Tranh tặng bạn",
+            url: "https://brianjsx.github.io/Paint-Image/",
             webview_height_ratio: "full",
           },
         ],

@@ -3,8 +3,6 @@ const callSendAPI = require("./callApi");
 const handleImage = require("./chat/handleImage");
 const textChat = require("./chat/textChat");
 const requestApiGet = require("./requestApi");
-const { handleEndAction } = require("./chat/handleEndAction");
-const Nhaccuatui = require("nhaccuatui-api");
 const sendAudio = require("./sendAudio");
 const { getMusic, replyMusic } = require("./musicPlayer");
 const { sendTiktokTrend } = require("./tiktok");
@@ -14,6 +12,7 @@ const { replyTranslate } = require("./translate");
 const UserModel = require("../app/Models/User");
 const RoomModel = require("../app/Models/Room");
 const ZingMp3 = require("zingmp3-api");
+const handlePhotoProfile = require("./photoProfile");
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
@@ -38,7 +37,7 @@ async function handlePostback(sender_psid, received_postback) {
       await textChat.handleUser(sender_psid, payload);
     } else if (payload === "end") {
       //payload click button end
-      await handleEndAction(sender_psid, payload);
+      await sendRepQuick(sender_psid, "yesEnd", "chat", "[BOT] Bạn có muốn ngắt kết nối không ??");
     } else if (payload === "uid") {
       //payload find UID
       let response = {
@@ -94,6 +93,8 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload == "dichav") {
       //payload send top trending tiktok
       await replyTranslate(sender_psid);
+    } else if (payload == "photo") {
+      await handlePhotoProfile(sender_psid);
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
