@@ -1,21 +1,21 @@
 const request = require("request");
 
-function sendRepQuick(sender_psid, key, url) {
+function sendRepQuick(sender_psid, key, url, textBot) {
   let request_body = {
     recipient: {
       id: sender_psid,
     },
     message: {
-      text: "[BOT] 📬 Bạn có muốn gửi cho bạn đang ghép không (5s) 😍??  ",
+      text: textBot ? textBot : "[BOT] 📬 Bạn có muốn gửi cho bạn đang ghép không (5s) 😍??",
       quick_replies: [
         {
           content_type: "text",
-          title: "OK luôn !!",
+          title: "Có",
           payload: `${key} ${url}`,
         },
         {
           content_type: "text",
-          title: "Một mình tôi",
+          title: "Không",
           payload: "noShareMusic",
         },
       ],
