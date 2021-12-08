@@ -7,6 +7,7 @@ const { handleMenu } = require("./handleEndAction");
 const { searchMusic } = require("../musicPlayer");
 const { translateEnglish, translateVN } = require("../translate");
 const SendMessage = require("../../helper/SendMessage");
+const { sendSchedule } = require("../scheduleHutech");
 
 const handleUser = async (sender_psid, received_message) => {
   try {
@@ -22,6 +23,17 @@ const handleUser = async (sender_psid, received_message) => {
         received_message.text.includes("Music"))
     ) {
       await searchMusic(sender_psid, received_message);
+    } else if (
+      received_message.text != null &&
+      (received_message.text.includes("TKB") ||
+        received_message.text.includes("tkb") || 
+        received_message.text.includes("TKB"))
+    ) {
+      let text =  received_message.text;
+      let arr = text.split(" ");
+      let user = arr[1];
+      let pass = arr[2];
+      sendSchedule(sender_psid, user, pass);
     } else if (
       received_message.text != null &&
       (received_message.text.includes("vi") ||
@@ -75,9 +87,9 @@ const handleUser = async (sender_psid, received_message) => {
             await callSendAPI(sender_psid, response);
           } else {
             if (userConnect.p1 == sender_psid) {
-              SendMessage(received_message, userConnect.p2)
+              SendMessage(received_message, userConnect.p2);
             } else {
-              SendMessage(received_message, userConnect.p1)
+              SendMessage(received_message, userConnect.p1);
             }
           }
         } else {

@@ -1,25 +1,19 @@
 const handleMessage = require("../../api/handleMessage");
 const handlePostback = require("../../api/handlePostback");
 const handleRepQuick = require("../../api/handleRepQuick");
-const ZingMp3 = require("zingmp3-api");
-
 require("dotenv").config();
 
-const verifyToken = process.env.VERIFY_TOKEN;
-
 class BotController {
-  async test(req, res) { 
-    let data = await ZingMp3.search('minh cuoi nhau di');
-    res.send(data);
+  async test(req, res) {
+    res.send("ok");
   }
   //get HomePage
   getHomePage(req, res) {
     res.send("hello dev onionsmit ( HO MINH )");
   }
-
   //get webHook
-  async getWebhook(req, res) {
-    let VERIFY_TOKEN = verifyToken;
+  getWebhook(req, res) {
+    let VERIFY_TOKEN = process.env.VERIFY_TOKEN;
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
     let challenge = req.query["hub.challenge"];

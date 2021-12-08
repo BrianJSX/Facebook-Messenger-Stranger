@@ -30,6 +30,11 @@ const handleMenuPre = async () => {
           },
           {
             type: "postback",
+            title: "️🔥 Xem TKB",
+            payload: "tkb",
+          },
+          {
+            type: "postback",
             title: "❌ kết thúc ",
             payload: "end",
           },
