@@ -23,9 +23,11 @@ const handlePhotoProfile = async (sender_psid) => {
         if(userConnect.p1 == sender_psid) { 
             //send photo p2 => p1
             let data = await handleUserInfo(userConnect.p2);
+            console.log(data);
             sendUserPhotoPair(sender_psid, data);
         } else {
             let data = await handleUserInfo(userConnect.p1);
+            console.log(data);
             sendUserPhotoPair(sender_psid, data);
         }
     }
