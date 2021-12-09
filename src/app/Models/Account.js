@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Login = new Schema(
+const Account = new Schema(
   {
-    id: { type: String, unique: true },
+    messenger_id: { type: String, unique: true },
     username: { type: String },
     password: { type: String },
   },
@@ -12,4 +12,4 @@ const Login = new Schema(
   }
 );
 
-module.exports = mongoose.model("login", Login);
+module.exports = mongoose.model("account", Account);

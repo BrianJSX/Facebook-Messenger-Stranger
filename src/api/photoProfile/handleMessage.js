@@ -48,7 +48,7 @@ const sendUserPhotoPair = async (sender_psid, data) => {
   } else {
     const index = checkIdRequest(sender_psid);
     let title = `[BOT] ☢️ Cảnh báo !!`;
-    let subtitle = `📌 Lưu ý: Thực hiện lại yêu cầu này. Các yêu cầu trước đó sẽ bị hủy.`;
+    let subtitle = `📌 Lưu ý: Thực hiện lại yêu cầu này. Thời gian đợi sẽ lâu hơn các yêu cầu trước đó sẽ bị hủy.`;
     await SendTemplateCustom(sender_psid, title, subtitle);
     clearTimeout(idRequest[index].timer);
     idRequest.splice(index, 1);
