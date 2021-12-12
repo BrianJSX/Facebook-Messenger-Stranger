@@ -26,8 +26,8 @@ const handleUser = async (sender_psid, received_message) => {
     } else if (
       received_message.text != null &&
       (received_message.text.includes("login") ||
-        received_message.text.includes("login") || 
-        received_message.text.includes("login"))
+        received_message.text.includes("Login") || 
+        received_message.text.includes("LOGIN"))
     ) {
       let text =  received_message.text;
       let arr = text.split(" ");
