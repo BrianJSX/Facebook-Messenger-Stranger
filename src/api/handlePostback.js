@@ -10,12 +10,8 @@ const sendVideo = require("./sendVideo");
 const sendRepQuick = require("./sendRepQuick");
 const { replyTranslate } = require("./translate");
 const UserModel = require("../app/Models/User");
-const AccountModel = require("../app/Models/Account");
 const ZingMp3 = require("zingmp3-api");
 const handlePhotoProfile = require("./photoProfile");
-const { sendSchedule } = require("../api/scheduleHutech");
-const CryptoJS = require("crypto-js");
-const SendTemplateCustom = require("../helper/SendTemplateCustom");
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
@@ -48,7 +44,7 @@ async function handlePostback(sender_psid, received_postback) {
         sender_psid,
         "yesEnd",
         "chat",
-        "[BOT] Bạn có muốn ngắt kết nối không ??"
+        "[BOT] Bạn có muốn kết thúc không ??"
       );
     } else if (payload === "uid") {
       //payload find UID
@@ -108,28 +104,14 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload == "photo") {
       await handlePhotoProfile(sender_psid);
     } else if (payload == "tkb") {
-      let account = await AccountModel.findOne({
-        messenger_id: sender_psid,
-      });
-
-      if (account != null) {
-        //descipt password
-        var bytes = CryptoJS.AES.decrypt(
-          account.password,
-          process.env.SECRET_KEY
-        );
-        var originalText = bytes.toString(CryptoJS.enc.Utf8);
-
-        //send message
-        let username = account.username;
-        let password = originalText;
-        await sendSchedule(sender_psid, username, password);
-      } else {
-        //add acccount
-        let title = `[BOT] ☢️ Vui lòng nhập tài khoản và mật khẩu trước để lấy thời khóa biểu.`;
-        let subtitle = `📌 Cú pháp: login <MSSV> <Mật khẩu>. Ví dụ: login 1811060485 12345`;
-        await SendTemplateCustom(sender_psid, title, subtitle);
-      }
+      await sendRepQuick(
+        sender_psid,
+        "schedule",
+        "",
+        "[BOT] Vui lòng chọn loại thời khóa biểu ??",
+        "week",
+        "personal"
+      );
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
