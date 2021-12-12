@@ -1,6 +1,6 @@
 const request = require("request");
 
-function sendRepQuick(sender_psid, key, url, textBot) {
+function sendRepQuick(sender_psid, key, url, textBot, title1, title2) {
   let request_body = {
     recipient: {
       id: sender_psid,
@@ -10,13 +10,13 @@ function sendRepQuick(sender_psid, key, url, textBot) {
       quick_replies: [
         {
           content_type: "text",
-          title: "Có",
-          payload: `${key} ${url}`,
+          title: title1 ? title1 : "Có",
+          payload: title1 ? title1 : `${key} ${url}`,
         },
         {
           content_type: "text",
-          title: "Không",
-          payload: "noShareMusic",
+          title: title2 ? title2 : "Không",
+          payload: title2 ? title2 : "noShareMusic",
         },
       ],
     },
@@ -32,7 +32,6 @@ function sendRepQuick(sender_psid, key, url, textBot) {
     (err, res, body) => {
       if (!err) {
         console.log(res.body);
-        console.log("Đã gửi audio");
       } else {
         console.error("Gửi hình lỗi:" + err);
       }

@@ -4,11 +4,14 @@ const Hutech = require("hutech-api");
 const Account = require("../../app/Models/Account");
 const CryptoJS = require("crypto-js");
 const SendTemplateCustom = require("../../helper/SendTemplateCustom");
+const sendRepQuick = require("../sendRepQuick");
 
 const addAccount = async (sender_psid, username, password) => {
+
   let account = await Account.findOne({
     messenger_id: sender_psid,
   });
+
   let ciphertext = CryptoJS.AES.encrypt(
     password,
     process.env.SECRET_KEY
@@ -24,6 +27,16 @@ const addAccount = async (sender_psid, username, password) => {
     user.password = ciphertext;
     await user.save();
     await SendTemplateCustom(sender_psid, title, subtitle);
+    setTimeout(async () => {
+      await sendRepQuick(
+        sender_psid,
+        "schedule",
+        "",
+        "[BOT] Vui lòng chọn loại thời khóa biểu ??",
+        "week",
+        "personal"
+      );
+    }, 2);
   } else {
     const user = await Account.updateOne(
       { messenger_id: sender_psid },
@@ -32,12 +45,43 @@ const addAccount = async (sender_psid, username, password) => {
     let title = `[BOT] ☢️ Hệ thống đã update tài khoản mật khẩu của bạn`;
     let subtitle = `📌 Hãy ấn vào Menu chọn "Xem TKB" để có thời khóa biểu nhé`;
     await SendTemplateCustom(sender_psid, title, subtitle);
+    setTimeout(async () => {
+      await sendRepQuick(
+        sender_psid,
+        "schedule",
+        "",
+        "[BOT] Vui lòng chọn loại thời khóa biểu ??",
+        "week",
+        "personal"
+      );
+    }, 2000);
   }
 };
 
 const sendSchedule = async (sender_psid, username, password) => {
   let scheduleArr = [];
   let schedule = await Hutech.getScheduleWeek(username, password);
+  if (!schedule) {
+    let title = `[BOT] ☢️ Tài khoản hoặc mật khẩu không chính xác. Vui lòng cập nhật !!`;
+    let subtitle = `📌 Update Cú pháp: login <MSSV> <Mật Khẩu>. VD: login 1811060485 123456`;
+    await SendTemplateCustom(sender_psid, title, subtitle);
+  } else {
+    schedule.data.map((data, index) => {
+      let scheduleObj = {
+        title: `${data.subject} - ${data.room}`,
+        subtitle: `${data.codeSubject} - ${data.weekday} - ${data.date} - Tiết: ${data.start} - ${schedule.account} `,
+        image_url:
+          "https://clipart.world/wp-content/uploads/2020/08/may-calendar-for-2018-year-png.png",
+      };
+      scheduleArr.push(scheduleObj);
+    });
+    sendTemplate(sender_psid, scheduleArr);
+  }
+};
+
+const sendSchedulePersonal = async (sender_psid, username, password) => {
+  let scheduleArr = [];
+  let schedule = await Hutech.getSchedulePersonal(username, password);
   if (!schedule) {
     let response = {
       text: "[BOT] Tài khoản hoặc mật khẩu đăng nhập không chính xác",
@@ -47,7 +91,7 @@ const sendSchedule = async (sender_psid, username, password) => {
     schedule.data.map((data, index) => {
       let scheduleObj = {
         title: `${data.subject} - ${data.room}`,
-        subtitle: `${data.codeSubject} - ${data.weekday} - ${data.date} - Tiết: ${data.start} - ${schedule.account} `,
+        subtitle: `${data.codeSubject} - ${data.date} - Tiết: ${data.start} - ${schedule.account} `,
         image_url:
           "https://clipart.world/wp-content/uploads/2020/08/may-calendar-for-2018-year-png.png",
       };
@@ -73,4 +117,5 @@ const sendTemplate = async (sender_psid, data) => {
 module.exports = {
   addAccount: addAccount,
   sendSchedule: sendSchedule,
+  sendSchedulePersonal: sendSchedulePersonal
 };
