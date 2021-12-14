@@ -12,6 +12,7 @@ const { replyTranslate } = require("./translate");
 const UserModel = require("../app/Models/User");
 const ZingMp3 = require("zingmp3-api");
 const handlePhotoProfile = require("./photoProfile");
+const { sendRepQuickSchedule } = require("./scheduleHutech");
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
@@ -104,14 +105,7 @@ async function handlePostback(sender_psid, received_postback) {
     } else if (payload == "photo") {
       await handlePhotoProfile(sender_psid);
     } else if (payload == "tkb") {
-      await sendRepQuick(
-        sender_psid,
-        "schedule",
-        "",
-        "[BOT] Vui lòng chọn loại thời khóa biểu ??",
-        "week",
-        "personal"
-      );
+      await sendRepQuickSchedule(sender_psid);
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
