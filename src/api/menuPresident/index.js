@@ -25,7 +25,12 @@ const handleMenuPre = async () => {
           },
           {
             type: "postback",
-            title: "️🔥 Thông tin bạn ghép",
+            title: "️😈 Chặn",
+            payload: "block",
+          },
+          {
+            type: "postback",
+            title: "️👀 Thông tin bạn ghép",
             payload: "photo",
           },
           {

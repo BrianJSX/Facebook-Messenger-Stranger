@@ -14,15 +14,25 @@ const handleRoom = async (sender_psid, payload) => {
     } else if (payload === "lgbt") {
       searchSex = payload;
     }
-
+    const userBlock = await User.findOne({ messenger_id: sender_psid });
+    
     let roomIsEmpty = await Room.findOne({
-      p1: { $nin: sender_psid },
+      p1: { $nin: userBlock.block },
       gioitinh: String(searchSex),
       p2: null,
     }).sort({ updatedAt: 1 });
 
+    
     if (roomIsEmpty != null) {
-      await handleUpdateP2(roomIsEmpty, sender_psid, payload);
+      //sender_psid is the p2. p2 not block user p1 but p1 block p2
+      const userBlockOfP1 = await User.findOne({ messenger_id: roomIsEmpty.p1 });
+      let check = userBlockOfP1.block.indexOf(String(sender_psid));
+
+      if(check >= 0) { 
+        await handleAddRoom(sender_psid, payload);
+      } else { 
+        await handleUpdateP2(roomIsEmpty, sender_psid, payload);
+      }
     } else {
       await handleAddRoom(sender_psid, payload);
     }

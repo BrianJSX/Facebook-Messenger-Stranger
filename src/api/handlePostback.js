@@ -10,14 +10,17 @@ const sendVideo = require("./sendVideo");
 const sendRepQuick = require("./sendRepQuick");
 const { replyTranslate } = require("./translate");
 const UserModel = require("../app/Models/User");
+const RoomModel = require("../app/Models/Room");
 const ZingMp3 = require("zingmp3-api");
 const handlePhotoProfile = require("./photoProfile");
 const { sendRepQuickSchedule } = require("./scheduleHutech");
+const { sendRepQuickBlock } = require("./block");
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
   try {
     let payload = received_postback.payload;
+
     let userIsRoom = await UserModel.findOne({
       messenger_id: sender_psid,
       state: 1,
@@ -106,6 +109,28 @@ async function handlePostback(sender_psid, received_postback) {
       await handlePhotoProfile(sender_psid);
     } else if (payload == "tkb") {
       await sendRepQuickSchedule(sender_psid);
+    } else if (payload == "block") {
+      if (userIsRoom != null) {
+        //find Room have p1 or p2 is sender_psid
+        let userConnect = await RoomModel.findOne({
+          $or: [{ p1: sender_psid }, { p2: sender_psid }],
+        });
+
+        if (userConnect.p2 == null) {
+          //send message no user pair
+          console.log("đang đợi bot ghép bạn vui lòng chờ");
+        } else {
+          if (userConnect.p1 == sender_psid) {
+            //send uid p2
+            await sendRepQuickBlock(sender_psid, userConnect.p2);
+          } else {
+            //send uid p1
+            await sendRepQuickBlock(sender_psid, userConnect.p1);
+          }
+        }
+      } else {
+        console.log("không có phòng");
+      }
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
