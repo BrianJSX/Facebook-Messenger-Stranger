@@ -3,7 +3,7 @@ const shareDogCat = require("../api/shareDogCat");
 const shareTiktok = require("../api/shareTiktok");
 const { handleEndAction } = require("./chat/handleEndAction");
 const SendTemplateCustom = require("../helper/SendTemplateCustom");
-const { sendSchedule, sendSchedulePersonal } = require("./scheduleHutech");
+const { sendSchedule, sendSchedulePersonal, sendInfoStudent } = require("./scheduleHutech");
 const AccountModel = require("../app/Models/Account");
 const CryptoJS = require("crypto-js");
 
@@ -53,6 +53,22 @@ async function handleRepQuick(sender_psid, message) {
       let username = account.username;
       let password = originalText;
       await sendSchedulePersonal(sender_psid, username, password);
+    } else {
+      let title = `[BOT] ☢️ Vui lòng nhập tài khoản và mật khẩu trước để lấy thời khóa biểu.`;
+      let subtitle = `📌 Cú pháp: login <MSSV> <Mật khẩu>. Ví dụ: login 1811060485 12345`;
+      await SendTemplateCustom(sender_psid, title, subtitle);
+    }
+  } else if (payload.includes("infoStudent")) {
+    if (account != null) {
+      var bytes = CryptoJS.AES.decrypt(
+        account.password,
+        process.env.SECRET_KEY
+      );
+      var originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+      let username = account.username;
+      let password = originalText;
+      await sendInfoStudent(sender_psid, username, password);
     } else {
       let title = `[BOT] ☢️ Vui lòng nhập tài khoản và mật khẩu trước để lấy thời khóa biểu.`;
       let subtitle = `📌 Cú pháp: login <MSSV> <Mật khẩu>. Ví dụ: login 1811060485 12345`;
