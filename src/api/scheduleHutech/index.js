@@ -168,5 +168,5 @@ module.exports = {
   sendSchedule,
   sendSchedulePersonal,
   sendRepQuickSchedule,
-  sendInfoStudent
+  sendInfoStudent, 
 };

@@ -5,6 +5,7 @@ const User = new Schema(
   {
     messenger_id: { type: String, unique: true },
     state: { type: Number, default: 0 },
+    block: [String]
   },
   {
     timestamps: true,

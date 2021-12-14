@@ -3,9 +3,14 @@ const shareDogCat = require("../api/shareDogCat");
 const shareTiktok = require("../api/shareTiktok");
 const { handleEndAction } = require("./chat/handleEndAction");
 const SendTemplateCustom = require("../helper/SendTemplateCustom");
-const { sendSchedule, sendSchedulePersonal, sendInfoStudent } = require("./scheduleHutech");
+const {
+  sendSchedule,
+  sendSchedulePersonal,
+  sendInfoStudent,
+} = require("./scheduleHutech");
 const AccountModel = require("../app/Models/Account");
 const CryptoJS = require("crypto-js");
+const { blockUser } = require("./block");
 
 async function handleRepQuick(sender_psid, message) {
   let payload = message.quick_reply.payload;
@@ -74,6 +79,9 @@ async function handleRepQuick(sender_psid, message) {
       let subtitle = `📌 Cú pháp: login <MSSV> <Mật khẩu>. Ví dụ: login 1811060485 12345`;
       await SendTemplateCustom(sender_psid, title, subtitle);
     }
+  } else if (payload.includes("block")) {
+    let uid = payload.slice("6");
+    await blockUser(sender_psid, uid);
   }
 }
 
