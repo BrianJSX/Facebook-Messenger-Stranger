@@ -4,29 +4,40 @@ const callSendAPI = require("../callApi");
 
 const blockUser = async (sender_psid, uid) => {
   const user = await User.findOne({ messenger_id: sender_psid });
-  let check = user.block.indexOf(uid);
+  const check = user.block.indexOf(uid);
+  const length  = user.block.length;
 
-  if (check < 0) {
-    const userBlock = await User.findOneAndUpdate(
-      { messenger_id: sender_psid },
-      { $push: { block: String(uid) } }
-    );
-
+  if(length >= 5) {
     let text = [
       {
-        title: "[BOT Block] đã block bạn đang ghép. Nhấn nút kết thúc để ngắt cuộc trò chuyện!!",
-        subtitle: "Lưu ý: Bạn sẽ không tìm thấy bạn đấy sau khi ghép nữa !!",
+        title: "[BOT Block] Bạn đã chặn trên 5 user",
+        subtitle: "Vui lòng mở chặn bớt để chặn tiếp nhé !! ",
       },
     ];
     await sendTemplate(sender_psid, text);
-  } else {
-    let text = [
-      {
-        title: "[BOT Block] User này bạn đã block rồi.",
-        subtitle: "Lưu ý: Nếu muốn ngắt cuộc trò chuyện. Vui lòng nhấn nút kết thúc trên Menu!!",
-      },
-    ];
-    await sendTemplate(sender_psid, text);
+  } else { 
+    if (check < 0) {
+      const userBlock = await User.findOneAndUpdate(
+        { messenger_id: sender_psid },
+        { $push: { block: String(uid) } }
+      );
+  
+      let text = [
+        {
+          title: "[BOT Block] đã block bạn đang ghép. Nhấn nút kết thúc để ngắt cuộc trò chuyện!!",
+          subtitle: "Lưu ý: Bạn sẽ không tìm thấy bạn đấy sau khi ghép nữa !!",
+        },
+      ];
+      await sendTemplate(sender_psid, text);
+    } else {
+      let text = [
+        {
+          title: "[BOT Block] User này bạn đã block rồi.",
+          subtitle: "Lưu ý: Nếu muốn ngắt cuộc trò chuyện. Vui lòng nhấn nút kết thúc trên Menu!!",
+        },
+      ];
+      await sendTemplate(sender_psid, text);
+    }
   }
 };
 

@@ -1,6 +1,7 @@
 const callSendAPI = require("../callApi");
 const Room = require("../../app/Models/Room");
 const User = require("../../app/Models/User");
+const History = require("../../app/Models/History");
 
 //handle event postback
 const handleRoom = async (sender_psid, payload) => {
@@ -15,23 +16,26 @@ const handleRoom = async (sender_psid, payload) => {
       searchSex = payload;
     }
     const userBlock = await User.findOne({ messenger_id: sender_psid });
-    
+
     let roomIsEmpty = await Room.findOne({
       p1: { $nin: userBlock.block },
       gioitinh: String(searchSex),
       p2: null,
     }).sort({ updatedAt: 1 });
 
-    
     if (roomIsEmpty != null) {
       //sender_psid is the p2. p2 not block user p1 but p1 block p2
-      const userBlockOfP1 = await User.findOne({ messenger_id: roomIsEmpty.p1 });
+      const userBlockOfP1 = await User.findOne({
+        messenger_id: roomIsEmpty.p1,
+      });
       let check = userBlockOfP1.block.indexOf(String(sender_psid));
 
-      if(check >= 0) { 
+      if (check >= 0) {
         await handleAddRoom(sender_psid, payload);
-      } else { 
+      } else {
         await handleUpdateP2(roomIsEmpty, sender_psid, payload);
+        let idRoom = await handleAddHistory(roomIsEmpty, sender_psid, payload);
+        await sendMessageAttachment(roomIsEmpty, sender_psid, idRoom);
       }
     } else {
       await handleAddRoom(sender_psid, payload);
@@ -39,6 +43,33 @@ const handleRoom = async (sender_psid, payload) => {
   } catch (error) {
     console.log("Lỗi handle room" + error);
   }
+};
+
+const handleAddHistory = async (roomIsEmpty, sender_psid, payload) => {
+  const history = new History();
+  history.p1 = roomIsEmpty.p1;
+  history.p2 = sender_psid;
+  await history.save();
+  return history._id;
+};
+
+const sendMessageAttachment = async (roomIsEmpty, sender_psid, idRoom) => {
+  let response = {
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: `[BOT] ID: ${idRoom}. `,
+            subtitle: `📌 Hãy nhớ ID phòng này để có thể tìm lại bạn ghép.`,
+          },
+        ],
+      },
+    },
+  };
+  await callSendAPI(roomIsEmpty.p1, response);
+  await callSendAPI(sender_psid, response);
 };
 
 const handleAddRoom = async (sender_psid, payload) => {
@@ -101,7 +132,7 @@ const handleUpdateP2 = async (roomIsEmpty, sender_psid, payload) => {
           template_type: "generic",
           elements: [
             {
-              title: `[BOT] 💓 Ping Ping! Đã tìm thấy bạn rồi 💯 `,
+              title: `[BOT] 💓 Đã tìm thấy bạn rồi 💯 `,
               subtitle: `Hãy Gửi lời chào với nhau nào!! 🙋.`,
             },
           ],
