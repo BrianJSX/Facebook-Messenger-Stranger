@@ -11,6 +11,7 @@ const {
 const AccountModel = require("../app/Models/Account");
 const CryptoJS = require("crypto-js");
 const { blockUser } = require("./block");
+const { handleUnBlock } = require("./unblock");
 
 async function handleRepQuick(sender_psid, message) {
   let payload = message.quick_reply.payload;
@@ -82,6 +83,9 @@ async function handleRepQuick(sender_psid, message) {
   } else if (payload.includes("block")) {
     let uid = payload.slice("6");
     await blockUser(sender_psid, uid);
+  } else if (payload.includes("bochan")) {
+    let uid = payload.slice("7");
+    await handleUnBlock(sender_psid, uid);
   }
 }
 

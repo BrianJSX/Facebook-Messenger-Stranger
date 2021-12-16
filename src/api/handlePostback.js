@@ -15,6 +15,8 @@ const ZingMp3 = require("zingmp3-api");
 const handlePhotoProfile = require("./photoProfile");
 const { sendRepQuickSchedule } = require("./scheduleHutech");
 const { sendRepQuickBlock } = require("./block");
+const { unBlockUser } = require("./unblock");
+
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
@@ -131,6 +133,8 @@ async function handlePostback(sender_psid, received_postback) {
       } else {
         console.log("không có phòng");
       }
+    } else if (payload == "unblock") {
+      await unBlockUser(sender_psid);
     } else if (payload.includes("keytiktok")) {
       //payload send video tiktok
       const urlVideo = payload.slice(10);
