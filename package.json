@@ -35,7 +35,7 @@
     "zingmp3-api": "^1.0.10"
   },
   "devDependencies": {
-    "node-sass": "^6.0.0"
+    "node-sass": "^7.0.0"
   },
   "scripts": {
     "start": "nodemon --inspect src/index.js",
